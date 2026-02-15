@@ -1,0 +1,108 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Header */
+header {
+  background-color: #ffcb05;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  color: #3b4cca;
+}
+
+header nav a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #3b4cca;
+  font-weight: bold;
+}
+
+/* Hero Section */
+#hero {
+  background: url('https://wallpaperaccess.com/full/1510622.jpg') no-repeat center center/cover;
+  height: 400px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 4px #000;
+}
+
+#hero button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #3b4cca;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* About Section */
+section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+/* Gallery */
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
+}
+
+.card img {
+  width: 100px;
+  height: 100px;
+}
+
+/* Contact Form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+form input, form textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  padding: 10px;
+  background-color: #3b4cca;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Footer */
+footer {
+  background-color: #3b4cca;
+  color: white;
+  text-align: center;
+  padding: 15px;
+}
