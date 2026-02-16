@@ -1,4 +1,8 @@
 import { prisma } from "../lib/db.js";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const emailRegex = /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -32,7 +36,7 @@ export const validateRegister = async (req, res, next) => {
 
 
 export const validateLogin = (req, res, next) => {
-    const {email, password}=req.body;
+    const { email, password } = req.body;
     if (!emailRegex.test(email)) {
         return res.status(400).json({ message: "email is not valid" });
     }
@@ -43,3 +47,23 @@ export const validateLogin = (req, res, next) => {
     next();
 };
 
+export const jwtToken = (userPayload) => {
+    const token = jwt.sign(userPayload, process.env.SECRET_KEY);
+    return token;
+}
+
+export const jwtValidation = (req, res, next) => {
+    const token = req.cookies.jwt;
+    if (!token) {
+        return res.status(404).json({ message: "no token" });
+    }
+    try {
+        const decode = jwt.verify(token, process.env.SECRET_KEY);
+        req.user = decode;
+        next();
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(400).json({ message: "error verifying the jwt" });
+    }
+}

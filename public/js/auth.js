@@ -34,10 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await response.json();
         if (!response.ok) {
-          console.log('error: ', data.message());
+          console.log('error: ', data.message);
         }
         alert("registration succesful");
-        window.location.href = '/html/login.html'; 
+        window.location.href = '/html/login.html';
 
       } catch (err) {
         console.error('Network or fetch error:', err);
@@ -64,15 +64,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetch('/auth/authLogin', {
           method: 'post',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({email, password })
+          body: JSON.stringify({ email, password }),
+          credentials: 'include'
         });
         const data = await response.json();
         if (!response.ok) {
-          console.log('error: ', response.text());
+          console.log('error: ', data.message);
         }
-        alert("login succesful");
-        window.location.href = '/html/index.html'; 
-
+        console.log(data);
+        if (data.user.isAdmin === true) {
+          location.assign('/user/dashboard');
+        } else {
+          location.assign('/admin/dashboard');
+        }
+        
       } catch (err) {
         console.error('Network or fetch error:', err);
       }
