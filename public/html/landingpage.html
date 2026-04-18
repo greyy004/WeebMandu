@@ -3,62 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokémon Landing Page</title>
+  <title>Pokémon World - Experience the Adventure</title>
   <link rel="stylesheet" href="/css/landingpage.css">
 </head>
 <body>
   <header>
-    <h1>Pokémon World</h1>
+    <h1>✨ Pokémon World</h1>
     <nav>
       <a href="#about">About</a>
-      <a href="/html/register.html">Register</a>
-      <a href="/html/login.html">Login</a>
+      <a href="#gallery">Collection</a>
+      <a href="#contact">Contact</a>
+      <a href="/html/login.html" class="btn-login">Login</a>
+      <a href="/html/register.html">Sign Up</a>
     </nav>
   </header>
 
   <section id="hero">
-    <h2>Catch 'Em All!</h2>
-    <p>Explore the world of Pokémon and discover your favorite creatures.</p>
-    <button onclick="alert('Welcome to Pokémon World!')">Get Started</button>
+    <h2>Discover the World of Pokémon</h2>
+    <p>Journey through vibrant landscapes, catch incredible creatures, and become a legendary trainer in a world limited only by your imagination.</p>
+    <button onclick="handleGetStarted()">Start Your Journey</button>
   </section>
 
   <section id="about">
-    <h2>About Pokémon</h2>
-    <p>Pokémon are creatures of various shapes and sizes who inhabit the Pokémon world. Trainers catch, train, and battle Pokémon to become champions.</p>
+    <h2>About the Adventure</h2>
+    <p>Pokémon World is more than just a game—it's a community of trainers dedicated to discovery and strategy. Explore diverse habitats, train your unique team, and rise through the ranks to become a true Pokémon Champion.</p>
   </section>
 
   <section id="gallery">
-    <h2>Pokémon Gallery</h2>
+    <h2>Featured Collection</h2>
     <div class="cards">
       <div class="card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbasaur">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="Bulbasaur">
         <h3>Bulbasaur</h3>
       </div>
       <div class="card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png" alt="Charmander">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" alt="Charmander">
         <h3>Charmander</h3>
       </div>
       <div class="card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png" alt="Squirtle">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" alt="Squirtle">
         <h3>Squirtle</h3>
+      </div>
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu">
+        <h3>Pikachu</h3>
       </div>
     </div>
   </section>
 
   <section id="contact">
-    <h2>Contact Us</h2>
-    <form onsubmit="submitForm(event)">
-      <input type="text" placeholder="Your Name" required>
-      <input type="email" placeholder="Your Email" required>
-      <textarea placeholder="Your Message" required></textarea>
-      <button type="submit">Send</button>
+    <h2>Get in Touch</h2>
+    <form onsubmit="handleSubmitForm(event)">
+      <input type="text" placeholder="Full Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <textarea placeholder="How can we help you?" rows="5" required></textarea>
+      <button type="submit">Send Message</button>
     </form>
   </section>
 
   <footer>
-    <p>© 2026 Pokémon World</p>
+    <p>&copy; 2026 Pokémon World. Crafted with passion for trainers everywhere.</p>
+    <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.6;">Powered by TrainerHub Ecosystem</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    function handleGetStarted() {
+      window.location.href = '/html/register.html';
+    }
+
+    function handleSubmitForm(event) {
+      event.preventDefault();
+      const form = event.target;
+      const name = form.querySelector('input[type="text"]').value;
+      alert(`Thank you, ${name}! Your message has been sent to the Professor.`);
+      form.reset();
+    }
+  </script>
 </body>
 </html>
+

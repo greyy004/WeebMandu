@@ -6,6 +6,8 @@ import authRoutes from '../routes/authRoutes.js';
 import CookieParser from 'cookie-parser';
 import userRoutes from '../routes/userRoutes.js';
 import adminRoutes from '../routes/adminRoutes.js';
+import pool from '../libs/db.js';
+import initdb from '../libs/initdb.js';
 
 dotenv.config();
 const app = express();
@@ -29,8 +31,13 @@ app.use('/', (req, res) =>{
 return res.sendFile(path.join(__dirname,'..','..', 'public','html', 'landingpage.html'));
 });
 
-
-
+try {
+    await initdb();
+    console.log('Database initialized successfully.');
+}
+catch(err){
+console.error('Error initializing database:', err);
+}
 app.listen(port, ()=>{
 console.log(`The server is running on: http://localhost:${port}`);
 });

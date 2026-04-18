@@ -51,15 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = document.getElementById('password').value;
       const email = document.getElementById('email').value;
 
-      if (!emailRegex.test(email)) {
-        alert("Invalid email address.");
+      if (!email || !password) {
+        alert("Please enter both email and password.");
         return;
       }
 
-      if (!passwordRegex.test(password)) {
-        alert("Invalid password. It must be at least 8 characters long and contain at least one letter and one number");
-        return;
-      }
       try {
         const response = await fetch('/auth/authLogin', {
           method: 'post',
@@ -69,13 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await response.json();
         if (!response.ok) {
-          console.log('error: ', data.message);
+          alert(data.message || "Login failed");
+          return;
         }
-        console.log(data);
+
         if (data.user.isAdmin === true) {
-          location.assign('/user/dashboard');
-        } else {
           location.assign('/admin/dashboard');
+        } else {
+          location.assign('/user/dashboard');
         }
         
       } catch (err) {

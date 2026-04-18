@@ -3,9 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Dashboard - Pokémon World</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
-<body>
-    this is admin
+<body class="dashboard-layout">
+    <header class="navbar admin-header">
+        <div class="navbar-brand">
+            <span>⚙️</span> Admin Control Panel
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-primary" style="background: #ef4444; padding: 8px 16px; font-size: 0.875rem;" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="welcome-box admin-welcome">
+            <h1>Admin Control Center</h1>
+            <p>Manage users, content, and system settings from one clean interface.</p>
+        </div>
+
+        <div class="grid">
+            <div class="stat-card">
+                <h3>👥 Total Users</h3>
+                <div class="stat-value admin-stat-value">1,246</div>
+                <p class="stat-desc">Registered trainers in the system</p>
+                <button class="card-btn">Manage Users</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>🎮 Active Sessions</h3>
+                <div class="stat-value admin-stat-value">342</div>
+                <p class="stat-desc">Trainers currently online</p>
+                <button class="card-btn">View Sessions</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>📊 Total Caught</h3>
+                <div class="stat-value admin-stat-value">8,923</div>
+                <p class="stat-desc">Pokémon caught across the world</p>
+                <button class="card-btn">Game Data</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>⚡ System Status</h3>
+                <div class="stat-value admin-stat-value" style="font-size: 1.5rem; color: #10b981;">✓ Healthy</div>
+                <p class="stat-desc">All services are running normally</p>
+                <button class="card-btn">System Logs</button>
+            </div>
+        </div>
+
+        <div class="table-box">
+            <div class="table-box-header">
+                <h2 style="font-size: 1.25rem;">Recent Activity</h2>
+                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;">Export CSV</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Trainer_John</td>
+                        <td>Caught Pikachu</td>
+                        <td>Today at 2:45 PM</td>
+                        <td><span class="badge badge-success">Success</span></td>
+                    </tr>
+                    <tr>
+                        <td>MistyLover22</td>
+                        <td>Completed Quest</td>
+                        <td>Today at 1:30 PM</td>
+                        <td><span class="badge badge-success">Success</span></td>
+                    </tr>
+                    <tr>
+                        <td>Brock_Trainer</td>
+                        <td>User Suspended</td>
+                        <td>Yesterday at 4:15 PM</td>
+                        <td><span class="badge badge-danger">Suspended</span></td>
+                    </tr>
+                    <tr>
+                        <td>AshKetchum</td>
+                        <td>Password Reset</td>
+                        <td>Yesterday at 10:20 AM</td>
+                        <td><span class="badge badge-success">Success</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.875rem;">
+        &copy; 2026 Pokémon World Admin Panel. Restricted Access.
+    </footer>
+
+    <script>
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await fetch('/auth/authLogout');
+                    window.location.href = '/html/landingpage.html';
+                } catch (err) {
+                    console.error('Logout failed:', err);
+                    window.location.href = '/html/landingpage.html';
+                }
+            }
+        }
+    </script>
 </body>
-</html>
+</html>

@@ -1,27 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-  <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Pokémon World</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+<body class="auth-page">
+    <div class="auth-container">
+        <h1>Create Account</h1>
+        <p class="subtitle">Join our community of trainers today</p>
+        
+        <div id="errorMsg" class="message message-error"></div>
+        <div id="successMsg" class="message message-success"></div>
 
-<body>
-  <div class="auth-container">
-    <h1>Register</h1>
-    <form id="registerForm">
-      <input type="text" id="username" name="username" placeholder="Full Name" required>
-      <input type="email" id="email" name="email" placeholder="Email" required>
-      <input type="password" id="password" name="password" placeholder="Password" required>
-      <button type="submit">Register</button>
-    </form>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="trainer_gold" required>
+            </div>
 
-    <p>Already have an account? <a href="login.html">Login</a></p>
-  </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
 
-  <script src="/js/auth.js"></script>
+            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+        </form>
+
+        <div class="footer-link">
+            Already have an account? <a href="/html/login.html">Sign in here</a>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <a href="/html/landingpage.html" style="font-size: 0.875rem; color: var(--text-muted); text-decoration: none;">&larr; Back to Home</a>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+      document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const successMsg = document.getElementById('successMsg');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        try {
+          const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+          });
+          
+          if (response.ok) {
+            successMsg.textContent = 'Account created successfully! Redirecting to login...';
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+            setTimeout(() => window.location.href = '/html/login.html', 1500);
+          } else {
+            errorMsg.textContent = 'Registration failed. Email may already exist.';
+            errorMsg.style.display = 'block';
+            successMsg.style.display = 'none';
+          }
+        } catch (error) {
+          errorMsg.textContent = 'Connection error. Please try again.';
+          errorMsg.style.display = 'block';
+          successMsg.style.display = 'none';
+        }
+      });
+    </script>
 </body>
-
-</html>
+</html>

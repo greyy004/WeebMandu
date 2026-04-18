@@ -1,6 +1,6 @@
-import { prisma } from "../lib/db.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import pool from '../libs/db.js';
 
 dotenv.config();
 
@@ -22,9 +22,10 @@ export const validateRegister = async (req, res, next) => {
         return res.status(400).json({ message: "password is not valid" });
     }
     try {
-        const userExists = await prisma.user.findUnique({
-            where: { email: email },
-        });
+        const query = 'SELECT * FROM users WHERE email = $1';
+        const { rows } = await pool.query(query, [email]);
+        const userExists = rows[0];
+
         if (userExists) {
             return res.status(409).json({ message: "user already exists" });
         }
@@ -37,12 +38,8 @@ export const validateRegister = async (req, res, next) => {
 
 export const validateLogin = (req, res, next) => {
     const { email, password } = req.body;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ message: "email is not valid" });
-    }
-
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({ message: "password is not valid" });
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
     }
     next();
 };
@@ -67,3 +64,10 @@ export const jwtValidation = (req, res, next) => {
         return res.status(400).json({ message: "error verifying the jwt" });
     }
 }
+
+export const isAdmin = (req, res, next) => {
+    if (!req.user || !req.user.isAdmin) {
+        return res.status(403).json({ message: "Access denied. Admin privileges required." });
+    }
+    next();
+};

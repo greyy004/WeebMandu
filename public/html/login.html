@@ -1,22 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-  <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Pokémon World</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <div class="auth-container">
-    <h1>Login</h1>
-    <form id="loginForm">
-      <input type="email" id ="email" name="email" placeholder="Email" required>
-      <input type="password" id="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    <p>Don't have an account? <a href="register.html">Register</a></p>
-  </div>
+<body class="auth-page">
+    <div class="auth-container">
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Please enter your details to sign in</p>
+        
+        <div id="errorMsg" class="message message-error"></div>
+        <div id="successMsg" class="message message-success"></div>
 
-  <script src="/js/auth.js"></script>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+        </form>
+
+        <div class="footer-link">
+            Don't have an account? <a href="/html/register.html">Sign up for free</a>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <a href="/html/landingpage.html" style="font-size: 0.875rem; color: var(--text-muted); text-decoration: none;">&larr; Back to Home</a>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
 </body>
 </html>
+

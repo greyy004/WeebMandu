@@ -3,9 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>User Dashboard - Pokémon World</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
-<body>
-    this is user
+<body class="dashboard-layout">
+    <header class="navbar">
+        <div class="navbar-brand">
+            <span>✨</span> Pokémon World
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.875rem;" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="welcome-box">
+            <h1>Welcome back, Trainer!</h1>
+            <p>Your journey continues. Check your progress and latest achievements.</p>
+        </div>
+
+        <div class="grid">
+            <div class="stat-card">
+                <h3>📊 Your Progress</h3>
+                <div class="stat-value">8 / 151</div>
+                <p class="stat-desc">Pokémon caught in your Pokédex</p>
+                <button class="card-btn">View Details</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>🏆 Achievements</h3>
+                <div class="stat-value">3</div>
+                <p class="stat-desc">Special badges earned so far</p>
+                <button class="card-btn">View Gallery</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>💰 Rewards</h3>
+                <div class="stat-value">2,500</div>
+                <p class="stat-desc">Pokécoins available in your wallet</p>
+                <button class="card-btn">Exchange</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>🎯 Active Quests</h3>
+                <div class="stat-value">5</div>
+                <p class="stat-desc">Missions waiting to be completed</p>
+                <button class="card-btn">Go to Quests</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>👥 Online Friends</h3>
+                <div class="stat-value">12</div>
+                <p class="stat-desc">Trainers currently exploring the world</p>
+                <button class="card-btn">Message</button>
+            </div>
+
+            <div class="stat-card">
+                <h3>⚙️ Account</h3>
+                <div class="stat-value">Settings</div>
+                <p class="stat-desc">Manage your profile and preferences</p>
+                <button class="card-btn">Open Settings</button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.875rem;">
+        &copy; 2026 Pokémon World. All rights reserved.
+    </footer>
+
+    <script>
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await fetch('/auth/authLogout');
+                    window.location.href = '/html/landingpage.html';
+                } catch (err) {
+                    console.error('Logout failed:', err);
+                    window.location.href = '/html/landingpage.html';
+                }
+            }
+        }
+    </script>
 </body>
 </html>
