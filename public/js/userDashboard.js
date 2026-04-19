@@ -30,11 +30,33 @@ async function loadUserStats() {
 }
 
 let currentDailyPokemons = [];
+let ownedPokemonIds = new Set();
+
+async function loadOwnedPokemons() {
+    try {
+        const response = await fetch('/user/owned-pokemons', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        const pokemons = Array.isArray(data.pokemons) ? data.pokemons : [];
+        ownedPokemonIds = new Set(pokemons.map((pokemon) => Number(pokemon.id)));
+    } catch (error) {
+        console.error('Error loading owned pokemons:', error);
+    }
+}
 
 async function loadDailyPokemons() {
     const container = document.getElementById('dailyPokemonContainer');
     
     try {
+        await loadOwnedPokemons();
+
         const response = await fetch('/user/daily-pokemons', {
             method: 'GET',
             credentials: 'include'
@@ -62,6 +84,7 @@ function displayDailyPokemons(pokemons) {
     }
 
     pokemons.forEach(pokemon => {
+        const isClaimed = ownedPokemonIds.has(Number(pokemon.id));
         const card = document.createElement('div');
         card.className = 'pokemon-card';
         card.innerHTML = `
@@ -73,10 +96,10 @@ function displayDailyPokemons(pokemons) {
                 ${pokemon.types.map(type => `<span class="type-badge ${type}">${type}</span>`).join('')}
             </div>
             <div class="catch-info">
-                <button class="catch-btn" onclick="catchPokemon(${pokemon.id})">
+                <button class="catch-btn" onclick="catchPokemon(${pokemon.id})" ${isClaimed ? 'disabled' : ''}>
                     <i data-lucide="zap"></i>
-                    <span>Catch</span>
-                    <span class="catch-cost">(${pokemon.catch_cost})</span>
+                    <span>${isClaimed ? 'Claimed' : 'Catch'}</span>
+                    ${isClaimed ? '' : `<span class="catch-cost">(${pokemon.catch_cost})</span>`}
                 </button>
             </div>
         `;
@@ -106,7 +129,9 @@ async function catchPokemon(id) {
         const data = await response.json();
 
         if (response.ok) {
+            ownedPokemonIds.add(Number(pokemon.id));
             showToast(`Success! You caught ${pokemon.name}!`, 'success');
+            displayDailyPokemons(currentDailyPokemons);
             loadUserStats(); // Refresh user stats (coins, etc.)
         } else {
             showToast(data.message || 'Catch failed. Do you have enough Pokeballs?', 'error');
@@ -119,6 +144,7 @@ async function catchPokemon(id) {
 
 function updateUserStats(data) {
     // Update stat values with data from backend
+    document.getElementById('userName').textContent = data.name || 'Trainer';
     document.getElementById('pokedexProgress').textContent = data.pokedexProgress || '0';
     document.getElementById('achievements').textContent = data.achievements || '0';
     document.getElementById('pokeCoins').textContent = data.pokeCoins || '0';

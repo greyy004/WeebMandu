@@ -138,27 +138,34 @@ export const getStats = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Get user's Pokédex progress (caught Pokémon count)
-        const pokedexQuery = 'SELECT COUNT(*) as caught FROM user_pokemons WHERE user_id = $1';
+        // Get user info (name + wallet)
+        const userQuery = `
+            SELECT name, coins, pokeballs 
+            FROM users 
+            WHERE id = $1
+        `;
+        const userResult = await pool.query(userQuery, [userId]);
+
+        const name = userResult.rows[0]?.name || null;
+        const pokeCoins = userResult.rows[0]?.coins || 0;
+        const pokeballs = userResult.rows[0]?.pokeballs || 0;
+
+        // Get Pokédex progress
+        const pokedexQuery = `
+            SELECT COUNT(*) as caught 
+            FROM user_pokemons 
+            WHERE user_id = $1
+        `;
         const pokedexResult = await pool.query(pokedexQuery, [userId]);
         const pokedexProgress = parseInt(pokedexResult.rows[0].caught);
 
-        // Get user's wallet (coins + pokeballs)
-        const walletQuery = 'SELECT coins, pokeballs FROM users WHERE id = $1';
-        const walletResult = await pool.query(walletQuery, [userId]);
-        const pokeCoins = walletResult.rows[0]?.coins || 0;
-        const pokeballs = walletResult.rows[0]?.pokeballs || 0;
-
-        // Get achievements (simulated - you can implement real achievement system)
-        const achievements = Math.floor(Math.random() * 10); // Mock data
-
-        // Get active quests (simulated)
-        const activeQuests = Math.floor(Math.random() * 8) + 1; // Mock data
-
-        // Get online friends (simulated)
-        const onlineFriends = Math.floor(Math.random() * 20) + 5; // Mock data
+        // Mock data
+        const achievements = Math.floor(Math.random() * 10);
+        const activeQuests = Math.floor(Math.random() * 8) + 1;
+        const onlineFriends = Math.floor(Math.random() * 20) + 5;
 
         res.json({
+            name,
             pokedexProgress,
             achievements,
             pokeCoins,
@@ -166,6 +173,7 @@ export const getStats = async (req, res) => {
             activeQuests,
             onlineFriends
         });
+
     } catch (error) {
         console.error('Error fetching user stats:', error);
         res.status(500).json({ message: 'Failed to fetch stats' });

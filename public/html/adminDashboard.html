@@ -78,15 +78,15 @@
                         <div class="welcome-metrics">
                             <div class="metric-item">
                                 <span class="metric-label">Uptime</span>
-                                <span class="metric-value">99.9%</span>
+                                <span class="metric-value" id="uptime"><span>0%</span></span>
                             </div>
                             <div class="metric-item">
                                 <span class="metric-label">Avg Response</span>
-                                <span class="metric-value" id="responseTime">120ms</span>
+                                <span class="metric-value" id="responseTime"><span>0ms</span></span>
                             </div>
                             <div class="metric-item">
-                                <span class="metric-label">Monitoring</span>
-                                <span class="metric-value">24/7/365</span>
+                                <span class="metric-label">Last Update</span>
+                                <span class="metric-value" id="lastUpdate"><span>Just now</span></span>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
 
             <!-- Stats Grid -->
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card card-users">
                     <div class="card-header">
                         <div class="card-icon-wrapper users">
                             <i data-lucide="users"></i>
@@ -107,10 +107,10 @@
                     </div>
                     <div class="card-body">
                         <h3>Total Users</h3>
-                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-value" id="totalUsers"><span>0</span></div>
                         <p class="stat-desc">Registered trainers in system</p>
                         <div class="stat-progress-container">
-                            <div class="progress-bar" style="width: 75%;"></div>
+                            <div class="progress-bar" style="width: 0%;"></div>
                         </div>
                     </div>
                     <button class="card-btn">Manage Users</button>
@@ -118,7 +118,7 @@
 
 
 
-                <div class="stat-card">
+                <div class="stat-card card-pokemon">
                     <div class="card-header">
                         <div class="card-icon-wrapper pokemon">
                             <i data-lucide="database"></i>
@@ -127,10 +127,10 @@
                     </div>
                     <div class="card-body">
                         <h3>Total Caught</h3>
-                        <div class="stat-value" id="totalCaught">0</div>
+                        <div class="stat-value" id="totalCaught"><span>0</span></div>
                         <p class="stat-desc">Pokémon available</p>
                         <div class="stat-progress-container">
-                            <div class="progress-bar" style="width: 88%;"></div>
+                            <div class="progress-bar" style="width: 0%;"></div>
                         </div>
                     </div>
                     <button class="card-btn">Game Data</button>
@@ -163,54 +163,18 @@
                                 <th>Details</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="recentActivityTableBody">
                             <tr>
                                 <td>
                                     <div class="user-cell">
-                                        <div class="user-avatar-small">J</div>
-                                        <strong>Trainer_John</strong>
+                                        <div class="user-avatar-small"><span id="activityUserInitial">0</span></div>
+                                        <strong><span id="activityUserName">No recent user</span></strong>
                                     </div>
                                 </td>
-                                <td>Caught Pikachu</td>
-                                <td>Today at 2:45 PM</td>
-                                <td><span class="badge badge-success">Success</span></td>
-                                <td><button class="btn-link">View</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar-small">M</div>
-                                        <strong>MistyLover22</strong>
-                                    </div>
-                                </td>
-                                <td>Completed Quest</td>
-                                <td>Today at 1:30 PM</td>
-                                <td><span class="badge badge-success">Success</span></td>
-                                <td><button class="btn-link">View</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar-small">B</div>
-                                        <strong>Brock_Trainer</strong>
-                                    </div>
-                                </td>
-                                <td>User Suspended</td>
-                                <td>Yesterday at 4:15 PM</td>
-                                <td><span class="badge badge-danger">Suspended</span></td>
-                                <td><button class="btn-link">View</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar-small">A</div>
-                                        <strong>AshKetchum</strong>
-                                    </div>
-                                </td>
-                                <td>Password Reset</td>
-                                <td>Yesterday at 10:20 AM</td>
-                                <td><span class="badge badge-success">Success</span></td>
-                                <td><button class="btn-link">View</button></td>
+                                <td><span id="activityAction">No recent activity</span></td>
+                                <td><span id="activityTimestamp">--</span></td>
+                                <td><span class="badge badge-success" id="activityStatus">Pending</span></td>
+                                <td><button class="btn-link" id="activityDetailsBtn">View</button></td>
                             </tr>
                         </tbody>
                     </table>

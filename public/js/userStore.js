@@ -55,7 +55,7 @@ function setupHandlers() {
                 }
 
                 setWallet(data.pokeCoins, data.pokeballs);
-                showToast('Daily reward claimed (+20 coins, +1 PokÃ©ball)', 'success');
+                showToast('Daily reward claimed (+20 coins, +1 Pokeball)', 'success');
             } catch (error) {
                 console.error('Claim error:', error);
                 showToast('Error connecting to server.', 'error');
