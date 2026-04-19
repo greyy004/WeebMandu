@@ -4,63 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard - Pokémon World</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
     <header class="navbar">
         <div class="navbar-brand">
-            <span>✨</span> Pokémon World
+            <i data-lucide="zap" class="brand-icon"></i>
+            <span>Pokémon Trainer Hub</span>
         </div>
         <div class="nav-actions">
-            <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.875rem;" onclick="logout()">Logout</button>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <span class="user-name" id="userName">Trainer</span>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
         </div>
     </header>
 
     <main class="container">
-        <div class="welcome-box">
-            <h1>Welcome back, Trainer!</h1>
-            <p>Your journey continues. Check your progress and latest achievements.</p>
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <div class="badge-new">Welcome Back</div>
+                <h1>Hello, <span id="greetingName">Trainer</span>!</h1>
+                <p>Your Pokémon adventure continues. You've made great progress this week.</p>
+                <div class="welcome-actions">
+                    <button class="btn btn-primary">
+                        <i data-lucide="swords"></i>
+                        Start Quest
+                    </button>
+                    <button class="btn btn-outline">
+                        <i data-lucide="gamepad-2"></i>
+                        Play Game
+                    </button>
+                </div>
+            </div>
+            <div class="welcome-stats">
+                <div class="quick-stat">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-number" id="level">1</span>
+                    </div>
+                </div>
+                <div class="quick-stat">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="award"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Rank</span>
+                        <span class="stat-number" id="rank">Bronze</span>
+                    </div>
+                </div>
+                <div class="quick-stat">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Play Time</span>
+                        <span class="stat-number" id="playTime">0h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="daily-pokemon-section">
+            <div class="section-header">
+                <h2>Daily Pokémon to Catch</h2>
+                <p>New Pokémon appear every day. Catch them to expand your collection!</p>
+            </div>
+            <div id="dailyPokemonContainer" class="pokemon-list">
+                <!-- Daily Pokemons will be loaded here -->
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Fetching your daily Pokémon...</p>
+                </div>
+            </div>
         </div>
 
         <div class="grid">
             <div class="stat-card">
-                <h3>📊 Your Progress</h3>
-                <div class="stat-value">8 / 151</div>
+                <div class="card-icon-header">
+                    <i data-lucide="book-open"></i>
+                </div>
+                <h3>Your Progress</h3>
+                <div class="stat-value"><span id="pokedexProgress">0</span> <small>/ 151</small></div>
                 <p class="stat-desc">Pokémon caught in your Pokédex</p>
                 <button class="card-btn">View Details</button>
             </div>
 
             <div class="stat-card">
-                <h3>🏆 Achievements</h3>
-                <div class="stat-value">3</div>
+                <div class="card-icon-header">
+                    <i data-lucide="trophy"></i>
+                </div>
+                <h3>Achievements</h3>
+                <div class="stat-value" id="achievements">0</div>
                 <p class="stat-desc">Special badges earned so far</p>
                 <button class="card-btn">View Gallery</button>
             </div>
 
             <div class="stat-card">
-                <h3>💰 Rewards</h3>
-                <div class="stat-value">2,500</div>
+                <div class="card-icon-header">
+                    <i data-lucide="coins"></i>
+                </div>
+                <h3>Rewards</h3>
+                <div class="stat-value" id="pokeCoins">0</div>
                 <p class="stat-desc">Pokécoins available in your wallet</p>
                 <button class="card-btn">Exchange</button>
             </div>
 
             <div class="stat-card">
-                <h3>🎯 Active Quests</h3>
-                <div class="stat-value">5</div>
+                <div class="card-icon-header">
+                    <i data-lucide="list-checks"></i>
+                </div>
+                <h3>Active Quests</h3>
+                <div class="stat-value" id="activeQuests">0</div>
                 <p class="stat-desc">Missions waiting to be completed</p>
                 <button class="card-btn">Go to Quests</button>
             </div>
 
             <div class="stat-card">
-                <h3>👥 Online Friends</h3>
-                <div class="stat-value">12</div>
+                <div class="card-icon-header">
+                    <i data-lucide="users"></i>
+                </div>
+                <h3>Online Friends</h3>
+                <div class="stat-value" id="onlineFriends">0</div>
                 <p class="stat-desc">Trainers currently exploring the world</p>
                 <button class="card-btn">Message</button>
             </div>
 
             <div class="stat-card">
-                <h3>⚙️ Account</h3>
+                <div class="card-icon-header">
+                    <i data-lucide="settings"></i>
+                </div>
+                <h3>Account</h3>
                 <div class="stat-value">Settings</div>
                 <p class="stat-desc">Manage your profile and preferences</p>
                 <button class="card-btn">Open Settings</button>
@@ -68,22 +157,15 @@
         </div>
     </main>
 
-    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.875rem;">
-        &copy; 2026 Pokémon World. All rights reserved.
+    <footer class="footer">
+        <p>&copy; 2026 Pokémon World. All rights reserved.</p>
     </footer>
 
     <script>
-        async function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                try {
-                    await fetch('/auth/authLogout');
-                    window.location.href = '/html/landingpage.html';
-                } catch (err) {
-                    console.error('Logout failed:', err);
-                    window.location.href = '/html/landingpage.html';
-                }
-            }
-        }
+        // Initialize Lucide icons
+        lucide.createIcons();
     </script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/userDashboard.js"></script>
 </body>
 </html>

@@ -53,6 +53,7 @@
 
   <section id="contact">
     <h2>Get in Touch</h2>
+    <div id="contactMsg" class="message message-success" style="display:none;"></div>
     <form onsubmit="handleSubmitForm(event)">
       <input type="text" placeholder="Full Name" required>
       <input type="email" placeholder="Email Address" required>
@@ -75,7 +76,9 @@
       event.preventDefault();
       const form = event.target;
       const name = form.querySelector('input[type="text"]').value;
-      alert(`Thank you, ${name}! Your message has been sent to the Professor.`);
+      const contactMsg = document.getElementById('contactMsg');
+      contactMsg.textContent = `Thank you, ${name}! Your message has been sent to the Professor.`;
+      contactMsg.style.display = 'block';
       form.reset();
     }
   </script>

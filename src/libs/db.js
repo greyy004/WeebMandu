@@ -8,8 +8,12 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
 });
 
+let hasLoggedConnect = false;
 pool.on('connect', () => {
-    console.log('Connected to the database');
+    if (!hasLoggedConnect) {
+        console.log('Connected to the database');
+        hasLoggedConnect = true;
+    }
 });
 
 pool.on('error', (err) => {

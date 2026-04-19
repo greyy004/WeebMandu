@@ -1,29 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
   const registerForm = document.getElementById('registerForm');
   const loginForm = document.getElementById('loginForm');
+  const errorMsg = document.getElementById('errorMsg');
+  const successMsg = document.getElementById('successMsg');
   const emailRegex = /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+  const showMessage = (element, message) => {
+    if (!element) return;
+    element.textContent = message;
+    element.style.display = message ? 'block' : 'none';
+  };
 
   if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = document.getElementById('username').value;
+      showMessage(errorMsg, '');
+      showMessage(successMsg, '');
+
+      const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
-      const email = document.getElementById('email').value;
+      const email = document.getElementById('email').value.trim();
       const nameRegex = /^[A-Za-z]{2,}$/;
 
       if (!nameRegex.test(username)) {
-        alert("Invalid username.");
+        showMessage(errorMsg, 'Invalid username.');
         return;
       }
 
       if (!emailRegex.test(email)) {
-        alert("Invalid email address.");
+        showMessage(errorMsg, 'Invalid email address.');
         return;
       }
 
       if (!passwordRegex.test(password)) {
-        alert("Invalid password. It must be at least 8 characters long and contain at least one letter and one number");
+        showMessage(errorMsg, 'Invalid password. It must be at least 8 characters long and contain at least one letter and one number');
         return;
       }
       try {
@@ -34,13 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await response.json();
         if (!response.ok) {
-          console.log('error: ', data.message);
+          showMessage(errorMsg, data.message || 'Registration failed.');
+          return;
         }
-        alert("registration succesful");
-        window.location.href = '/html/login.html';
 
+        showMessage(successMsg, 'Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          window.location.href = '/html/login.html';
+        }, 1000);
       } catch (err) {
         console.error('Network or fetch error:', err);
+        showMessage(errorMsg, 'Unable to register at this time. Please try again later.');
       }
     });
   }
@@ -48,11 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      showMessage(errorMsg, '');
+      showMessage(successMsg, '');
+
       const password = document.getElementById('password').value;
       const email = document.getElementById('email').value;
 
       if (!email || !password) {
-        alert("Please enter both email and password.");
+        showMessage(errorMsg, 'Please enter both email and password.');
         return;
       }
 
@@ -65,18 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await response.json();
         if (!response.ok) {
-          alert(data.message || "Login failed");
+          showMessage(errorMsg, data.message || 'Login failed');
           return;
         }
 
         if (data.user.isAdmin === true) {
-          location.assign('/admin/dashboard');
+          location.assign('/html/adminDashboard.html');
         } else {
-          location.assign('/user/dashboard');
+          location.assign('/html/userDashboard.html');
         }
         
       } catch (err) {
         console.error('Network or fetch error:', err);
+        showMessage(errorMsg, 'Unable to login at this time. Please try again later.');
       }
     });
   }

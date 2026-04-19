@@ -4,115 +4,226 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Pokémon World</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/adminDashboard.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="dashboard-layout">
-    <header class="navbar admin-header">
-        <div class="navbar-brand">
-            <span>⚙️</span> Admin Control Panel
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon-wrapper">
+                <i data-lucide="shield-check"></i>
+            </div>
+            <span class="logo-text">PokéAdmin</span>
         </div>
-        <div class="nav-actions">
-            <button class="btn btn-primary" style="background: #ef4444; padding: 8px 16px; font-size: 0.875rem;" onclick="logout()">Logout</button>
-        </div>
-    </header>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>Users</span>
+            </a>
 
-    <main class="container">
-        <div class="welcome-box admin-welcome">
-            <h1>Admin Control Center</h1>
-            <p>Manage users, content, and system settings from one clean interface.</p>
+            <a href="#" class="nav-item">
+                <i data-lucide="database"></i>
+                <span>Pokémon</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="sidebar-logout" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
         </div>
+    </aside>
 
-        <div class="grid">
-            <div class="stat-card">
-                <h3>👥 Total Users</h3>
-                <div class="stat-value admin-stat-value">1,246</div>
-                <p class="stat-desc">Registered trainers in the system</p>
-                <button class="card-btn">Manage Users</button>
+    <!-- Main Content -->
+    <div class="dashboard-wrapper">
+        <header class="navbar admin-header">
+            <div class="header-title">
+                <h2>Admin Control Panel</h2>
+                <p class="header-subtitle">System Overview & Management</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search users, logs...">
+                </div>
+                <div class="header-notifications">
+                    <div class="notification-trigger">
+                        <i data-lucide="bell"></i>
+                        <span class="notification-dot"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="welcome-section">
+                <div class="welcome-card admin-welcome">
+                    <div class="welcome-content">
+                        <h1>System Administration Hub</h1>
+                        <p>Monitor real-time metrics, manage users, and oversee system operations</p>
+                        <div class="welcome-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Uptime</span>
+                                <span class="metric-value">99.9%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Avg Response</span>
+                                <span class="metric-value" id="responseTime">120ms</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Monitoring</span>
+                                <span class="metric-value">24/7/365</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="welcome-illustration">
+                        <i data-lucide="activity"></i>
+                    </div>
+                </div>
             </div>
 
-            <div class="stat-card">
-                <h3>🎮 Active Sessions</h3>
-                <div class="stat-value admin-stat-value">342</div>
-                <p class="stat-desc">Trainers currently online</p>
-                <button class="card-btn">View Sessions</button>
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="card-header">
+                        <div class="card-icon-wrapper users">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <span class="card-badge">Active</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Total Users</h3>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <p class="stat-desc">Registered trainers in system</p>
+                        <div class="stat-progress-container">
+                            <div class="progress-bar" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                    <button class="card-btn">Manage Users</button>
+                </div>
+
+
+
+                <div class="stat-card">
+                    <div class="card-header">
+                        <div class="card-icon-wrapper pokemon">
+                            <i data-lucide="database"></i>
+                        </div>
+                        <span class="card-badge trending">Stats</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Total Caught</h3>
+                        <div class="stat-value" id="totalCaught">0</div>
+                        <p class="stat-desc">Pokémon available</p>
+                        <div class="stat-progress-container">
+                            <div class="progress-bar" style="width: 88%;"></div>
+                        </div>
+                    </div>
+                    <button class="card-btn">Game Data</button>
+                </div>
+
+
             </div>
 
-            <div class="stat-card">
-                <h3>📊 Total Caught</h3>
-                <div class="stat-value admin-stat-value">8,923</div>
-                <p class="stat-desc">Pokémon caught across the world</p>
-                <button class="card-btn">Game Data</button>
+            <!-- Recent Activity Table -->
+            <div class="activity-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h2>Recent Activity Log</h2>
+                        <span>Real-time system events</span>
+                    </div>
+                    <button class="btn btn-secondary">
+                        <i data-lucide="download"></i>
+                        Export CSV
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Timestamp</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar-small">J</div>
+                                        <strong>Trainer_John</strong>
+                                    </div>
+                                </td>
+                                <td>Caught Pikachu</td>
+                                <td>Today at 2:45 PM</td>
+                                <td><span class="badge badge-success">Success</span></td>
+                                <td><button class="btn-link">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar-small">M</div>
+                                        <strong>MistyLover22</strong>
+                                    </div>
+                                </td>
+                                <td>Completed Quest</td>
+                                <td>Today at 1:30 PM</td>
+                                <td><span class="badge badge-success">Success</span></td>
+                                <td><button class="btn-link">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar-small">B</div>
+                                        <strong>Brock_Trainer</strong>
+                                    </div>
+                                </td>
+                                <td>User Suspended</td>
+                                <td>Yesterday at 4:15 PM</td>
+                                <td><span class="badge badge-danger">Suspended</span></td>
+                                <td><button class="btn-link">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar-small">A</div>
+                                        <strong>AshKetchum</strong>
+                                    </div>
+                                </td>
+                                <td>Password Reset</td>
+                                <td>Yesterday at 10:20 AM</td>
+                                <td><span class="badge badge-success">Success</span></td>
+                                <td><button class="btn-link">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <div class="stat-card">
-                <h3>⚡ System Status</h3>
-                <div class="stat-value admin-stat-value" style="font-size: 1.5rem; color: #10b981;">✓ Healthy</div>
-                <p class="stat-desc">All services are running normally</p>
-                <button class="card-btn">System Logs</button>
-            </div>
-        </div>
-
-        <div class="table-box">
-            <div class="table-box-header">
-                <h2 style="font-size: 1.25rem;">Recent Activity</h2>
-                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;">Export CSV</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Action</th>
-                        <th>Timestamp</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Trainer_John</td>
-                        <td>Caught Pikachu</td>
-                        <td>Today at 2:45 PM</td>
-                        <td><span class="badge badge-success">Success</span></td>
-                    </tr>
-                    <tr>
-                        <td>MistyLover22</td>
-                        <td>Completed Quest</td>
-                        <td>Today at 1:30 PM</td>
-                        <td><span class="badge badge-success">Success</span></td>
-                    </tr>
-                    <tr>
-                        <td>Brock_Trainer</td>
-                        <td>User Suspended</td>
-                        <td>Yesterday at 4:15 PM</td>
-                        <td><span class="badge badge-danger">Suspended</span></td>
-                    </tr>
-                    <tr>
-                        <td>AshKetchum</td>
-                        <td>Password Reset</td>
-                        <td>Yesterday at 10:20 AM</td>
-                        <td><span class="badge badge-success">Success</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.875rem;">
-        &copy; 2026 Pokémon World Admin Panel. Restricted Access.
-    </footer>
+        </main>
+    </div>
 
     <script>
-        async function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                try {
-                    await fetch('/auth/authLogout');
-                    window.location.href = '/html/landingpage.html';
-                } catch (err) {
-                    console.error('Logout failed:', err);
-                    window.location.href = '/html/landingpage.html';
-                }
-            }
-        }
+        // Initialize Lucide icons
+        lucide.createIcons();
     </script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/adminDashboard.js"></script>
 </body>
-</html>
+</html>

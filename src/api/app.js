@@ -6,8 +6,7 @@ import authRoutes from '../routes/authRoutes.js';
 import CookieParser from 'cookie-parser';
 import userRoutes from '../routes/userRoutes.js';
 import adminRoutes from '../routes/adminRoutes.js';
-import pool from '../libs/db.js';
-import initdb from '../libs/initdb.js';
+import { initTables } from "../libs/initdb.js";
 
 dotenv.config();
 const app = express();
@@ -32,7 +31,7 @@ return res.sendFile(path.join(__dirname,'..','..', 'public','html', 'landingpage
 });
 
 try {
-    await initdb();
+    await initTables();
     console.log('Database initialized successfully.');
 }
 catch(err){
