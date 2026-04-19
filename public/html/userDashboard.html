@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - Pokémon World</title>
+    <title>User Dashboard - WeebMandu</title>
+    <link rel="icon" href="/assets/pokeball.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,12 +16,12 @@
 <body class="dashboard-layout">
     <header class="navbar">
         <div class="navbar-brand">
-            <i data-lucide="zap" class="brand-icon"></i>
+            <img src="/assets/pokeball.jpg" alt="Pokeball" class="brand-icon">
             <span>Pokémon Trainer Hub</span>
         </div>
         <div class="nav-actions">
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar">
+                <div class="user-avatar" id="userAvatar" style="cursor: pointer;" onclick="openUploadModal()">
                     <i data-lucide="user"></i>
                 </div>
                 <span class="user-name" id="userName">Trainer</span>
@@ -30,6 +31,29 @@
                 <span>Logout</span>
             </button>
         </div>
+
+    <!-- Profile Picture Upload Modal -->
+    <div id="uploadModal" class="upload-modal-overlay" style="display: none;">
+        <div class="upload-modal">
+            <button class="modal-close" type="button" onclick="closeUploadModal()">&times;</button>
+            <div class="modal-content">
+                <h2>Update Profile Picture</h2>
+                <p>Click to select an image or drag and drop</p>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/jpg,image/webp" style="display: none;">
+                    <i data-lucide="image" class="upload-icon"></i>
+                    <p>Choose an image</p>
+                </div>
+                <div id="uploadPreview" class="upload-preview" style="display: none;">
+                    <img id="previewImage" src="" alt="Preview">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeUploadModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn" onclick="uploadProfilePicture()">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </header>
 
     <main class="container">
@@ -162,7 +186,7 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 Pokémon World. All rights reserved.</p>
+        <p>&copy; 2026 WeebMandu. All rights reserved.</p>
     </footer>
 
     <script>

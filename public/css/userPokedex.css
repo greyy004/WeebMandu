@@ -83,6 +83,135 @@
   color: var(--text-muted);
 }
 
+.owned-actions {
+  margin-top: 14px;
+}
+
+.view-btn {
+  padding: 10px 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.view-btn:hover {
+  background: var(--primary-hover);
+}
+
+.pokemon-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 9999;
+}
+
+.pokemon-modal {
+  width: min(880px, 100%);
+  background: var(--bg-card);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(15, 23, 42, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.modal-content {
+  padding: 32px;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.modal-subtitle {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+}
+
+.modal-body {
+  display: grid;
+  gap: 24px;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.modal-image {
+  background: var(--border-light);
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image img {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+
+.modal-description {
+  margin-bottom: 18px;
+  color: var(--text-soft);
+  line-height: 1.75;
+}
+
+.modal-stats div,
+.modal-stats ul {
+  margin-bottom: 14px;
+  color: var(--text-main);
+}
+
+.modal-stats ul {
+  padding-left: 18px;
+}
+
+.modal-spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid var(--border-main);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: rotate 1s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .empty-state {
   grid-column: 1 / -1;
   padding: 60px;

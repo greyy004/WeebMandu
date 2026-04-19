@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - WeebMandu Admin</title>
+    <link rel="icon" href="/assets/pokeball.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/adminDashboard.css">
+    <link rel="stylesheet" href="/css/manageUsers.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dashboard-layout">
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon-wrapper">
+                <img src="/assets/pokeball.jpg" alt="Pokeball" class="logo-icon">
+            </div>
+            <span class="logo-text">PokeAdmin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/html/adminDashboard.html" class="nav-item">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i data-lucide="users"></i>
+                <span>Users</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="database"></i>
+                <span>Pokémon</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="sidebar-logout" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <div class="dashboard-wrapper">
+        <header class="navbar admin-header">
+            <div class="header-title">
+                <h2>Manage Users</h2>
+                <p class="header-subtitle">User administration and management</p>
+            </div>
+            <div class="header-actions">
+                <!-- Actions can be added here if needed -->
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <!-- Users Management Section -->
+            <div class="activity-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h2>User Management</h2>
+                        <span>View and manage all registered users</span>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Coins</th>
+                                <th>Pokéballs</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="7" class="empty-state">
+                                    <div class="empty-state-content">
+                                        <i data-lucide="users"></i>
+                                        <h4>No users found</h4>
+                                        <p>Users will appear here once registered</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="notifications.js"></script>
+    <script src="manageUsers.js"></script>
+</body>
+</html>

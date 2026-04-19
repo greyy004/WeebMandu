@@ -72,6 +72,9 @@ function renderOwnedPokemons(pokemons) {
                 ${types.map(type => `<span class="type-badge ${type}">${type}</span>`).join('')}
             </div>
             ${caughtAt ? `<div class="owned-meta">Caught: ${caughtAt}</div>` : ''}
+            <div class="owned-actions">
+                <button class="view-btn" onclick="showPokemonDetails(${pokemon.id})">View</button>
+            </div>
         `;
 
         container.appendChild(card);
@@ -79,6 +82,88 @@ function renderOwnedPokemons(pokemons) {
 
     if (window.lucide) {
         lucide.createIcons();
+    }
+}
+
+async function showPokemonDetails(id) {
+    const overlay = document.createElement('div');
+    overlay.className = 'pokemon-modal-overlay';
+    overlay.innerHTML = `
+        <div class="pokemon-modal">
+            <button class="modal-close" type="button">&times;</button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h2>Loading...</h2>
+                        <p class="modal-subtitle">Loading details...</p>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-spinner"></div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const closeModal = () => {
+        overlay.remove();
+    };
+
+    overlay.querySelector('.modal-close').addEventListener('click', closeModal);
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeModal();
+    });
+
+    try {
+        const [pokemonResponse, speciesResponse] = await Promise.all([
+            fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
+            fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+        ]);
+
+        if (!pokemonResponse.ok || !speciesResponse.ok) {
+            throw new Error('Pokemon details not available');
+        }
+
+        const pokemonData = await pokemonResponse.json();
+        const speciesData = await speciesResponse.json();
+
+        const flavorEntry = speciesData.flavor_text_entries.find(entry => entry.language.name === 'en');
+        const description = flavorEntry ? flavorEntry.flavor_text.replace(/\n|\f/g, ' ') : 'No description available.';
+
+        const abilities = pokemonData.abilities.map(item => item.ability.name).join(', ');
+        const stats = pokemonData.stats.map(item => `<li>${item.stat.name}: ${item.base_stat}</li>`).join('');
+        const types = pokemonData.types.map(item => item.type.name).join(', ');
+        const height = pokemonData.height / 10;
+        const weight = pokemonData.weight / 10;
+
+        const modalBody = overlay.querySelector('.modal-body');
+        const subtitle = overlay.querySelector('.modal-subtitle');
+        const title = overlay.querySelector('.modal-header h2');
+        title.textContent = pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1);
+        subtitle.textContent = `Type: ${types}`;
+
+        modalBody.innerHTML = `
+            <div class="modal-grid">
+                <div class="modal-image">
+                    <img src="${pokemonData.sprites.other['official-artwork'].front_default || pokemonData.sprites.front_default}" alt="${pokemonData.name}">
+                </div>
+                <div class="modal-details">
+                    <p class="modal-description">${description}</p>
+                    <div class="modal-stats">
+                        <div><strong>Abilities:</strong> ${abilities}</div>
+                        <div><strong>Height:</strong> ${height} m</div>
+                        <div><strong>Weight:</strong> ${weight} kg</div>
+                        <div><strong>Base Stats:</strong></div>
+                        <ul>${stats}</ul>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        const modalBody = overlay.querySelector('.modal-body');
+        modalBody.innerHTML = `<div class="error-state">Unable to load details. Please try again later.</div>`;
     }
 }
 

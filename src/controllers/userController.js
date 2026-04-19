@@ -23,19 +23,19 @@ export const getDailyPokemons = async (req, res) => {
     const today = new Date().toISOString().split("T")[0];
 
     try {
-        // 1️⃣ check DB
+        //check DB
         const existing = await pool.query(
             `SELECT pokemons FROM daily_pokemons 
        WHERE user_id=$1 AND date=$2`,
             [userId, today]
         );
 
-        // 2️⃣ if exists → return
+        //if exists → return
         if (existing.rows.length > 0) {
             return res.json(existing.rows[0].pokemons);
         }
 
-        // 3️⃣ generate new
+        //generate new
         const ids = getRandomIds();
 
         const pokemons = await Promise.all(
@@ -53,14 +53,14 @@ export const getDailyPokemons = async (req, res) => {
             })
         );
 
-        // 4️⃣ save in DB
+        //save in DB
         await pool.query(
             `INSERT INTO daily_pokemons (user_id, date, pokemons)
        VALUES ($1, $2, $3)`,
             [userId, today, JSON.stringify(pokemons)]
         );
 
-        // 5️⃣ return response
+        //return response
         res.json(pokemons);
 
     } catch (err) {
@@ -76,7 +76,7 @@ export const catchPokemon = async (req, res) => {
     try {
         await pool.query("BEGIN");
 
-        // 1️⃣ check pokeballs
+        //check pokeballs
         const user = await pool.query(
             "SELECT pokeballs FROM users WHERE id=$1",
             [userId]
@@ -87,7 +87,7 @@ export const catchPokemon = async (req, res) => {
             return res.status(400).json({ message: "No pokeballs left" });
         }
 
-        // 2️⃣ OPTIONAL: prevent duplicate catch
+        //OPTIONAL: prevent duplicate catch
         const exists = await pool.query(
             `SELECT * FROM user_pokemons 
        WHERE user_id=$1 AND pokemon_id=$2`,
@@ -99,13 +99,13 @@ export const catchPokemon = async (req, res) => {
             return res.status(400).json({ message: "Already caught" });
         }
 
-        // 3️⃣ deduct pokeball
+        //deduct pokeball
         await pool.query(
             "UPDATE users SET pokeballs = pokeballs - 1 WHERE id=$1",
             [userId]
         );
 
-        // 4️⃣ save pokemon
+        //save pokemon
         await pool.query(
             `INSERT INTO user_pokemons 
        (user_id, pokemon_id, name, image, types)
@@ -138,9 +138,9 @@ export const getStats = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Get user info (name + wallet)
+        // Get user info (name + wallet + profile picture)
         const userQuery = `
-            SELECT name, coins, pokeballs 
+            SELECT name, coins, pokeballs, profile_image_url 
             FROM users 
             WHERE id = $1
         `;
@@ -149,6 +149,7 @@ export const getStats = async (req, res) => {
         const name = userResult.rows[0]?.name || null;
         const pokeCoins = userResult.rows[0]?.coins || 0;
         const pokeballs = userResult.rows[0]?.pokeballs || 0;
+        const profileImageUrl = userResult.rows[0]?.profile_image_url || null;
 
         // Get Pokédex progress
         const pokedexQuery = `
@@ -171,7 +172,8 @@ export const getStats = async (req, res) => {
             pokeCoins,
             pokeballs,
             activeQuests,
-            onlineFriends
+            onlineFriends,
+            profileImageUrl
         });
 
     } catch (error) {
@@ -218,7 +220,7 @@ export const buyPokeball = async (req, res) => {
         const currentCoins = walletResult.rows[0].coins || 0;
         if (currentCoins < pokeballCost) {
             await pool.query('ROLLBACK');
-            return res.status(400).json({ message: 'Not enough PokÃ©coins' });
+            return res.status(400).json({ message: 'Not enough Pokecoins' });
         }
 
         const updatedResult = await pool.query(
@@ -233,7 +235,7 @@ export const buyPokeball = async (req, res) => {
         await pool.query('COMMIT');
 
         return res.json({
-            message: 'Purchased 1 PokÃ©ball',
+            message: 'Purchased 1 Pokeball',
             pokeCoins: updatedResult.rows[0].coins,
             pokeballs: updatedResult.rows[0].pokeballs,
             cost: pokeballCost

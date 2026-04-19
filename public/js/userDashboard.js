@@ -4,10 +4,137 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserStats();
     loadDailyPokemons();
     setupUserEventListeners();
+    setupUploadModal();
 
     // Auto-refresh stats every 30 seconds
     setInterval(loadUserStats, 30000);
 });
+
+let selectedFile = null;
+
+function setupUploadModal() {
+    const uploadArea = document.getElementById('uploadArea');
+    const avatarInput = document.getElementById('avatarInput');
+    const uploadModal = document.getElementById('uploadModal');
+
+    if (!uploadArea || !avatarInput) return;
+
+    // Click to select file
+    uploadArea.addEventListener('click', () => avatarInput.click());
+
+    // File input change
+    avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            selectedFile = file;
+            showPreview(file);
+        }
+    });
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--primary)';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = 'var(--border-main)';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--border-main)';
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            selectedFile = file;
+            avatarInput.files = e.dataTransfer.files;
+            showPreview(file);
+        }
+    });
+
+    // Close modal on overlay click
+    uploadModal.addEventListener('click', (e) => {
+        if (e.target === uploadModal) closeUploadModal();
+    });
+}
+
+function showPreview(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('uploadPreview');
+        const previewImage = document.getElementById('previewImage');
+        previewImage.src = e.target.result;
+        preview.style.display = 'block';
+        document.getElementById('uploadArea').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function openUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    modal.style.display = 'flex';
+    selectedFile = null;
+    document.getElementById('uploadPreview').style.display = 'none';
+    document.getElementById('uploadArea').style.display = 'flex';
+    document.getElementById('avatarInput').value = '';
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    modal.style.display = 'none';
+    selectedFile = null;
+}
+
+async function uploadProfilePicture() {
+    if (!selectedFile) {
+        showToast('Please select an image', 'warning');
+        return;
+    }
+
+    const uploadBtn = document.getElementById('uploadBtn');
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Uploading...';
+
+    const formData = new FormData();
+    formData.append('avatar', selectedFile);
+
+    try {
+        const response = await fetch('/auth/profile-picture', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast('Profile picture updated!', 'success');
+            displayAvatar(data.user.profileImageUrl);
+            closeUploadModal();
+            selectedFile = null;
+        } else {
+            showToast(data.message || 'Upload failed', 'error');
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        showToast('Error uploading image', 'error');
+    } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Upload';
+    }
+}
+
+function displayAvatar(profileImageUrl) {
+    const userAvatar = document.getElementById('userAvatar');
+    if (!userAvatar) return;
+
+    if (profileImageUrl) {
+        userAvatar.innerHTML = `<img src="${profileImageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+    } else {
+        userAvatar.innerHTML = '<i data-lucide="user"></i>';
+        if (window.lucide) lucide.createIcons();
+    }
+}
 
 async function loadUserStats() {
     try {
@@ -19,6 +146,9 @@ async function loadUserStats() {
         if (response.ok) {
             const data = await response.json();
             updateUserStats(data);
+            if (data.profileImageUrl) {
+                displayAvatar(data.profileImageUrl);
+            }
         } else {
             console.log('Failed to load user stats');
             setDefaultUserStats();
@@ -97,7 +227,6 @@ function displayDailyPokemons(pokemons) {
             </div>
             <div class="catch-info">
                 <button class="catch-btn" onclick="catchPokemon(${pokemon.id})" ${isClaimed ? 'disabled' : ''}>
-                    <i data-lucide="zap"></i>
                     <span>${isClaimed ? 'Claimed' : 'Catch'}</span>
                     ${isClaimed ? '' : `<span class="catch-cost">(${pokemon.catch_cost})</span>`}
                 </button>

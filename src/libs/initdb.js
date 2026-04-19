@@ -9,6 +9,7 @@ export const createUserTable = async () => {
         name VARCHAR(50) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        profile_image_url TEXT,
         is_admin BOOLEAN DEFAULT FALSE,
         coins INTEGER NOT NULL DEFAULT 100,
         pokeballs INTEGER NOT NULL DEFAULT 5,
@@ -95,17 +96,6 @@ export const createDailyRewardsTable = async () => {
   }
 };
 
-export const ensureDailyRewardsDefaults = async () => {
-  try {
-    await pool.query(`ALTER TABLE daily_rewards ALTER COLUMN coins SET DEFAULT 20`);
-    await pool.query(`ALTER TABLE daily_rewards ALTER COLUMN pokeballs SET DEFAULT 1`);
-  } catch (err) {
-    console.error("Error ensuring daily_rewards defaults:", err);
-  }
-};
-
-
-
 //OPTIONAL INDEX (FAST QUERIES)
 export const createIndexes = async () => {
   try {
@@ -122,13 +112,12 @@ export const createIndexes = async () => {
 
 
 
-// 6️⃣ RUN ALL TABLES TOGETHER
+// RUN ALL TABLES TOGETHER
 export const initTables = async () => {
   await createUserTable();
   await createDailyPokemonTable();
   await createUserPokemonTable();
   await createDailyRewardsTable();
-  await ensureDailyRewardsDefaults();
   await createIndexes();
 
   console.log("All tables created successfully");

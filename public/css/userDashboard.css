@@ -57,9 +57,9 @@ body {
 }
 
 .brand-icon {
-  color: var(--primary);
   width: 24px;
   height: 24px;
+  object-fit: contain;
 }
 
 .nav-actions {
@@ -84,11 +84,121 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-main);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
 }
 
 .user-avatar i {
   width: 18px;
   height: 18px;
+}
+
+/* Upload Modal */
+.upload-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 9999;
+}
+
+.upload-modal {
+  width: min(500px, 100%);
+  background: var(--bg-card);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(15, 23, 42, 0.2);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-main);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.upload-modal .modal-content {
+  padding: 32px;
+}
+
+.upload-modal h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.upload-modal p {
+  color: var(--text-soft);
+  margin-bottom: 20px;
+}
+
+.upload-area {
+  border: 2px dashed var(--border-main);
+  border-radius: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.upload-area:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--primary);
+}
+
+.upload-area p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.upload-preview {
+  margin-bottom: 20px;
+}
+
+.upload-preview img {
+  width: 100%;
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-actions .btn {
+  padding: 10px 20px;
 }
 
 .user-name {
@@ -474,10 +584,25 @@ body {
   background: var(--primary-hover);
 }
 
+.catch-btn:disabled,
+.catch-btn[disabled] {
+  background: #9ca3af;
+  color: #f1f5f9;
+  cursor: not-allowed;
+  border-color: transparent;
+  opacity: 1;
+}
+
+.catch-btn:disabled:hover,
+.catch-btn[disabled]:hover {
+  background: #9ca3af;
+}
+
 .catch-cost {
   font-size: 0.75rem;
-  opacity: 0.9;
+  opacity: 0.8;
   font-weight: 500;
+  margin-left: 8px;
 }
 
 /* Loading State */
