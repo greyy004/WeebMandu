@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokÃ©mon Store - PokÃ©mon Trainer Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+    <link rel="stylesheet" href="/css/userStore.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dashboard-layout">
+    <header class="navbar">
+        <div class="navbar-brand">
+            <i data-lucide="shopping-bag" class="brand-icon"></i>
+            <span>Pokemon Store</span>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-nav" id="backToDashboard" type="button">
+                <i data-lucide="arrow-left"></i>
+                <span>Back</span>
+            </button>
+            <button class="btn-logout" type="button" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="store-hero">
+            <div>
+                <h1>Trainer Supplies</h1>
+                <p>Buy 1 type of Pokeball for <strong>50 Pokecoins</strong>.</p>
+            </div>
+            <div class="wallet">
+                <div class="wallet-item">
+                    <div class="wallet-label">Pokecoins</div>
+                    <div class="wallet-value" id="walletCoins">0</div>
+                </div>
+                <div class="wallet-item">
+                    <div class="wallet-label">Pokeballs</div>
+                    <div class="wallet-value" id="walletPokeballs">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="store-grid">
+            <div class="store-card">
+                <div class="store-icon">
+                    <i data-lucide="circle"></i>
+                </div>
+                <div class="store-title">Pokeball</div>
+                <div class="store-desc">Adds +1 Pokeball to your inventory.</div>
+                <div class="store-price">50 Pokecoins</div>
+                <button class="store-btn" id="buyPokeballBtn" type="button">
+                    <i data-lucide="credit-card"></i>
+                    Buy
+                </button>
+            </div>
+
+            <div class="store-card store-card-secondary">
+                <div class="store-icon">
+                    <i data-lucide="gift"></i>
+                </div>
+                <div class="store-title">Daily Reward</div>
+                <div class="store-desc">Claim once per day: <strong>20 coins</strong> + <strong>1 PokÃ©ball</strong>.</div>
+                <div class="store-price">Free</div>
+                <button class="store-btn store-btn-outline" id="claimDailyRewardBtn" type="button">
+                    <i data-lucide="sparkles"></i>
+                    Claim
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Pokemon World. All rights reserved.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/userStore.js"></script>
+</body>
+</html>
+

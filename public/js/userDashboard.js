@@ -44,7 +44,7 @@ async function loadDailyPokemons() {
             currentDailyPokemons = await response.json();
             displayDailyPokemons(currentDailyPokemons);
         } else {
-            container.innerHTML = '<div class="error-state">Failed to load daily Pokémon. Please try again later.</div>';
+            container.innerHTML = '<div class="error-state">Failed to load daily Pokemon. Please try again later.</div>';
         }
     } catch (error) {
         console.error('Error loading daily pokemons:', error);
@@ -57,7 +57,7 @@ function displayDailyPokemons(pokemons) {
     container.innerHTML = '';
 
     if (!pokemons || pokemons.length === 0) {
-        container.innerHTML = '<div class="empty-state">No Pokémon available today.</div>';
+        container.innerHTML = '<div class="empty-state">No Pokemon available today.</div>';
         return;
     }
 
@@ -109,7 +109,7 @@ async function catchPokemon(id) {
             showToast(`Success! You caught ${pokemon.name}!`, 'success');
             loadUserStats(); // Refresh user stats (coins, etc.)
         } else {
-            showToast(data.message || 'Catch failed. Do you have enough Pokéballs?', 'error');
+            showToast(data.message || 'Catch failed. Do you have enough Pokeballs?', 'error');
         }
     } catch (error) {
         console.error('Error catching pokemon:', error);
@@ -136,13 +136,40 @@ function setDefaultUserStats() {
 }
 
 function setupUserEventListeners() {
+    const dailyRewardBtn = document.getElementById('dailyRewardBtn');
+    if (dailyRewardBtn) {
+        dailyRewardBtn.addEventListener('click', async () => {
+            dailyRewardBtn.disabled = true;
+            try {
+                const response = await fetch('/user/daily-reward/claim', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    showToast(data.message || 'Failed to claim daily reward', 'error');
+                    return;
+                }
+
+                showToast('Daily reward claimed (+20 coins, +1 Pokeball)', 'success');
+                loadUserStats();
+            } catch (error) {
+                console.error('Error claiming daily reward:', error);
+                showToast('Error connecting to server.', 'error');
+            } finally {
+                dailyRewardBtn.disabled = false;
+            }
+        });
+    }
+
     // Add click handlers for stat cards
     const statCards = document.querySelectorAll('.stat-card');
     
     const actions = [
-        'View your Pokédex details',
+        'View your Pokedex details',
         'Browse your achievement gallery',
-        'Exchange your Pokécoins',
+        'Exchange your Pokecoins',
         'Check your active quests',
         'Message your online friends',
         'Open account settings'
@@ -152,6 +179,16 @@ function setupUserEventListeners() {
         const button = card.querySelector('.card-btn');
         if (button) {
             button.addEventListener('click', () => {
+                if (button.id === 'pokedexDetailsBtn') {
+                    window.location.href = '/html/userPokedex.html';
+                    return;
+                }
+
+                if (button.id === 'storeBtn') {
+                    window.location.href = '/html/userStore.html';
+                    return;
+                }
+
                 showToast(`${actions[index]} feature coming soon!`, 'info');
             });
         }
@@ -177,4 +214,4 @@ async function logout() {
             window.location.href = '/html/landingpage.html';
         }
     }
-}
+}

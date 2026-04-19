@@ -143,10 +143,11 @@ export const getStats = async (req, res) => {
         const pokedexResult = await pool.query(pokedexQuery, [userId]);
         const pokedexProgress = parseInt(pokedexResult.rows[0].caught);
 
-        // Get user's coins
-        const coinsQuery = 'SELECT coins FROM users WHERE id = $1';
-        const coinsResult = await pool.query(coinsQuery, [userId]);
-        const pokeCoins = coinsResult.rows[0]?.coins || 0;
+        // Get user's wallet (coins + pokeballs)
+        const walletQuery = 'SELECT coins, pokeballs FROM users WHERE id = $1';
+        const walletResult = await pool.query(walletQuery, [userId]);
+        const pokeCoins = walletResult.rows[0]?.coins || 0;
+        const pokeballs = walletResult.rows[0]?.pokeballs || 0;
 
         // Get achievements (simulated - you can implement real achievement system)
         const achievements = Math.floor(Math.random() * 10); // Mock data
@@ -161,11 +162,162 @@ export const getStats = async (req, res) => {
             pokedexProgress,
             achievements,
             pokeCoins,
+            pokeballs,
             activeQuests,
             onlineFriends
         });
     } catch (error) {
         console.error('Error fetching user stats:', error);
         res.status(500).json({ message: 'Failed to fetch stats' });
+    }
+};
+
+export const getWallet = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const walletResult = await pool.query(
+            'SELECT coins, pokeballs FROM users WHERE id = $1',
+            [userId]
+        );
+
+        res.json({
+            pokeCoins: walletResult.rows[0]?.coins || 0,
+            pokeballs: walletResult.rows[0]?.pokeballs || 0
+        });
+    } catch (error) {
+        console.error('Error fetching wallet:', error);
+        res.status(500).json({ message: 'Failed to fetch wallet' });
+    }
+};
+
+export const buyPokeball = async (req, res) => {
+    const userId = req.user.id;
+    const pokeballCost = 50;
+
+    try {
+        await pool.query('BEGIN');
+
+        const walletResult = await pool.query(
+            'SELECT coins, pokeballs FROM users WHERE id = $1 FOR UPDATE',
+            [userId]
+        );
+
+        if (!walletResult.rows.length) {
+            await pool.query('ROLLBACK');
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const currentCoins = walletResult.rows[0].coins || 0;
+        if (currentCoins < pokeballCost) {
+            await pool.query('ROLLBACK');
+            return res.status(400).json({ message: 'Not enough PokÃ©coins' });
+        }
+
+        const updatedResult = await pool.query(
+            `UPDATE users
+             SET coins = coins - $1,
+                 pokeballs = pokeballs + 1
+             WHERE id = $2
+             RETURNING coins, pokeballs`,
+            [pokeballCost, userId]
+        );
+
+        await pool.query('COMMIT');
+
+        return res.json({
+            message: 'Purchased 1 PokÃ©ball',
+            pokeCoins: updatedResult.rows[0].coins,
+            pokeballs: updatedResult.rows[0].pokeballs,
+            cost: pokeballCost
+        });
+    } catch (error) {
+        await pool.query('ROLLBACK');
+        console.error('Error buying pokeball:', error);
+        return res.status(500).json({ message: 'Purchase failed' });
+    }
+};
+
+export const claimDailyReward = async (req, res) => {
+    const userId = req.user.id;
+    const today = new Date().toISOString().split('T')[0];
+    const rewardCoins = 20;
+    const rewardPokeballs = 1;
+
+    try {
+        await pool.query('BEGIN');
+
+        const existingResult = await pool.query(
+            `SELECT claimed
+             FROM daily_rewards
+             WHERE user_id = $1 AND date = $2
+             FOR UPDATE`,
+            [userId, today]
+        );
+
+        if (existingResult.rows.length && existingResult.rows[0].claimed === true) {
+            await pool.query('ROLLBACK');
+            return res.status(400).json({ message: 'Daily reward already claimed' });
+        }
+
+        if (existingResult.rows.length === 0) {
+            await pool.query(
+                `INSERT INTO daily_rewards (user_id, date, coins, pokeballs, claimed)
+                 VALUES ($1, $2, $3, $4, TRUE)`,
+                [userId, today, rewardCoins, rewardPokeballs]
+            );
+        } else {
+            await pool.query(
+                `UPDATE daily_rewards
+                 SET coins = $3,
+                     pokeballs = $4,
+                     claimed = TRUE
+                 WHERE user_id = $1 AND date = $2`,
+                [userId, today, rewardCoins, rewardPokeballs]
+            );
+        }
+
+        const updatedResult = await pool.query(
+            `UPDATE users
+             SET coins = coins + $1,
+                 pokeballs = pokeballs + $2
+             WHERE id = $3
+             RETURNING coins, pokeballs`,
+            [rewardCoins, rewardPokeballs, userId]
+        );
+
+        await pool.query('COMMIT');
+
+        return res.json({
+            message: 'Daily reward claimed',
+            reward: { coins: rewardCoins, pokeballs: rewardPokeballs },
+            pokeCoins: updatedResult.rows[0].coins,
+            pokeballs: updatedResult.rows[0].pokeballs
+        });
+    } catch (error) {
+        await pool.query('ROLLBACK');
+        console.error('Error claiming daily reward:', error);
+        return res.status(500).json({ message: 'Failed to claim daily reward' });
+    }
+};
+
+export const getOwnedPokemons = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const ownedResult = await pool.query(
+            `SELECT pokemon_id as id, name, image, types, caught_at
+             FROM user_pokemons
+             WHERE user_id = $1
+             ORDER BY caught_at DESC`,
+            [userId]
+        );
+
+        res.json({
+            count: ownedResult.rows.length,
+            pokemons: ownedResult.rows
+        });
+    } catch (error) {
+        console.error('Error fetching owned pokemons:', error);
+        res.status(500).json({ message: 'Failed to fetch owned pokemons' });
     }
 };

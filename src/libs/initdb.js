@@ -22,9 +22,7 @@ export const createUserTable = async () => {
   }
 };
 
-
-
-//DAILY POKÉMONS TABLE
+//DAILY POKEMONS TABLE
 export const createDailyPokemonTable = async () => {
   try {
     const query = `
@@ -82,8 +80,8 @@ export const createDailyRewardsTable = async () => {
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         date DATE NOT NULL,
 
-        coins INTEGER NOT NULL DEFAULT 50,
-        pokeballs INTEGER NOT NULL DEFAULT 3,
+        coins INTEGER NOT NULL DEFAULT 20,
+        pokeballs INTEGER NOT NULL DEFAULT 1,
 
         claimed BOOLEAN NOT NULL DEFAULT FALSE,
 
@@ -94,6 +92,15 @@ export const createDailyRewardsTable = async () => {
     await pool.query(query);
   } catch (err) {
     console.error("Error creating daily_rewards table:", err);
+  }
+};
+
+export const ensureDailyRewardsDefaults = async () => {
+  try {
+    await pool.query(`ALTER TABLE daily_rewards ALTER COLUMN coins SET DEFAULT 20`);
+    await pool.query(`ALTER TABLE daily_rewards ALTER COLUMN pokeballs SET DEFAULT 1`);
+  } catch (err) {
+    console.error("Error ensuring daily_rewards defaults:", err);
   }
 };
 
@@ -121,6 +128,7 @@ export const initTables = async () => {
   await createDailyPokemonTable();
   await createUserPokemonTable();
   await createDailyRewardsTable();
+  await ensureDailyRewardsDefaults();
   await createIndexes();
 
   console.log("All tables created successfully");
