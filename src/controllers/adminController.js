@@ -42,11 +42,12 @@ export const getStats = async (req, res) => {
 export const getUsersDetails = async (req, res) => {
     try {
         const query = `
-            SELECT id, name, email, is_admin AS "isAdmin", coins, pokeballs, created_at AS "createdAt"
+            SELECT id, name, email, is_admin AS "isAdmin", coins, pokeballs, created_at AS "createdAt", profile_image_url
             FROM users where is_admin = false
             ORDER BY created_at DESC
         `;
         const { rows } = await pool.query(query);
+        console.log('Fetched user details:', rows);
         res.json({ users: rows });
     } catch (error) {
         console.error('Error fetching user details:', error);

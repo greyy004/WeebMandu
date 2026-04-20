@@ -46,6 +46,10 @@
   font-weight: 700;
 }
 
+.user-avatar-small.has-image {
+  background: none;
+}
+
 /* Role badges */
 .role-badge {
   padding: 4px 10px;
