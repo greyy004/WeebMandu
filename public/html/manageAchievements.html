@@ -116,9 +116,15 @@
                             <input type="number" id="rewardPokeballs" name="reward_pokeballs" min="0" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="achievementIcon">Icon URL (optional)</label>
-                        <input type="url" id="achievementIcon" name="icon_url" placeholder="https://example.com/icon.png">
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="avatarInput" name="icon_file" accept="image/png,image/jpeg,image/jpg,image/webp" style="display: none;" required>
+                        <div id="imagePreview" class="image-preview" style="display: none;">
+                            <img src="" alt="Preview">
+                        </div>
+                        <div class="upload-placeholder">
+                            <i data-lucide="image" class="upload-icon"></i>
+                            <p>Choose an image or drag here</p>
+                        </div>
                     </div>
                     <button type="submit" class="btn-primary">Add Achievement</button>
                 </form>

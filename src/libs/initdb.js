@@ -97,10 +97,10 @@ export const createDailyRewardsTable = async () => {
 };
 
 // ACHIEVEMENT DEFINITIONS TABLE
-export const createAchievementDefinitionsTable = async () => {
+export const createAchievementsTable = async () => {
   try {
     const query = `
-      CREATE TABLE IF NOT EXISTS achievement_definitions (
+      CREATE TABLE IF NOT EXISTS achievements (
         id SERIAL PRIMARY KEY,
 
         code VARCHAR(50) UNIQUE NOT NULL,
@@ -120,7 +120,7 @@ export const createAchievementDefinitionsTable = async () => {
 
     await pool.query(query);
   } catch (err) {
-    console.error("Error creating achievement_definitions table:", err);
+    console.error("Error creating achievements table:", err);
   }
 };
 
@@ -130,7 +130,7 @@ export const createUserAchievementsTable = async () => {
     const query = `
       CREATE TABLE IF NOT EXISTS user_achievements (
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        achievement_id INTEGER NOT NULL REFERENCES achievement_definitions(id) ON DELETE CASCADE,
+        achievement_id INTEGER NOT NULL REFERENCES achievements(id) ON DELETE CASCADE,
 
         progress INTEGER NOT NULL DEFAULT 0,
         unlocked BOOLEAN NOT NULL DEFAULT FALSE,
@@ -179,7 +179,7 @@ export const initTables = async () => {
   await createDailyPokemonTable();
   await createUserPokemonTable();
   await createDailyRewardsTable();
-  await createAchievementDefinitionsTable();
+  await createAchievementsTable();
   await createUserAchievementsTable();
   await createAchievementIndexes();
   await createIndexes();

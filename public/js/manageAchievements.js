@@ -13,7 +13,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle form submission
     const form = document.getElementById('addAchievementForm');
     form.addEventListener('submit', handleAddAchievement);
+
+    // Setup Icon Upload Preview
+    setupIconPreview();
 });
+
+function setupIconPreview() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('avatarInput');
+    const previewDiv = document.getElementById('imagePreview');
+    const previewImg = previewDiv.querySelector('img');
+    const placeholder = uploadArea.querySelector('.upload-placeholder');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                previewImg.src = event.target.result;
+                previewDiv.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--primary)';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = 'var(--border-light)';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--border-light)';
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            fileInput.files = e.dataTransfer.files;
+            const event = new Event('change');
+            fileInput.dispatchEvent(event);
+        }
+    });
+}
 
 async function loadAchievements() {
     try {
@@ -98,31 +145,27 @@ async function handleAddAchievement(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    const achievementData = {
-        name: formData.get('name'),
-        code: formData.get('code'),
-        description: formData.get('description'),
-        condition_type: formData.get('condition_type'),
-        target_value: parseInt(formData.get('target_value')),
-        reward_coins: parseInt(formData.get('reward_coins')),
-        reward_pokeballs: parseInt(formData.get('reward_pokeballs')),
-        icon_url: formData.get('icon_url') || null
-    };
 
     try {
         const response = await fetch('/admin/achievements', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             credentials: 'include',
-            body: JSON.stringify(achievementData)
+            body: formData
         });
 
         if (response.ok) {
             showToast('Achievement added successfully!', 'success');
             event.target.reset();
-            document.getElementById('achievementCode').value = ''; // Clear the code field
+            document.getElementById('achievementCode').value = ''; 
+            
+            // Reset preview
+            const previewDiv = document.getElementById('imagePreview');
+            const placeholder = document.querySelector('.upload-placeholder');
+            if (previewDiv && placeholder) {
+                previewDiv.style.display = 'none';
+                placeholder.style.display = 'flex';
+            }
+            
             loadAchievements(); // Refresh the table
         } else {
             const error = await response.json();

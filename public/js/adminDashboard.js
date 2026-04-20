@@ -32,7 +32,7 @@ async function loadAdminStats() {
 function updateAdminStats(data) {
     // Update stat values with data from backend
     document.getElementById('totalUsers').textContent = data.totalUsers || '0';
-    document.getElementById('totalCaught').textContent = data.totalCaught || '0';
+    document.getElementById('totalAchievements').textContent = data.totalAchievements || '0';
 
     // Update last updated timestamp
     const now = new Date();
@@ -42,7 +42,7 @@ function updateAdminStats(data) {
 function setDefaultAdminStats() {
     // Set default values when backend is unavailable
     document.getElementById('totalUsers').textContent = '0';
-    document.getElementById('totalCaught').textContent = '0';
+    document.getElementById('totalAchievements').textContent = '0';
     document.getElementById('lastUpdate').textContent = 'Just now';
 }
 

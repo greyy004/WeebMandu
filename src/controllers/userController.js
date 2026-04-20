@@ -121,6 +121,9 @@ export const catchPokemon = async (req, res) => {
 
         await pool.query("COMMIT");
 
+        // Check for achievements (background task, don't wait for it to return response)
+        checkAchievements(userId, 'pokemon_caught').catch(err => console.error('Error checking achievements:', err));
+
         return res.json({ message: "Caught successfully!" });
 
     } catch (err) {
@@ -129,6 +132,48 @@ export const catchPokemon = async (req, res) => {
         return res.status(500).json({ message: "Catch failed" });
     }
 };
+
+// Achievement Helper
+async function checkAchievements(userId, conditionType) {
+    try {
+        // 1. Get all achievements for this condition
+        const { rows: achievements } = await pool.query(
+            'SELECT * FROM achievements WHERE condition_type = $1',
+            [conditionType]
+        );
+
+        for (const achievement of achievements) {
+            // 2. Calculate current progress based on condition
+            let progress = 0;
+            if (conditionType === 'pokemon_caught') {
+                const { rows } = await pool.query(
+                    'SELECT COUNT(*) as count FROM user_pokemons WHERE user_id = $1',
+                    [userId]
+                );
+                progress = parseInt(rows[0].count);
+            }
+            // Add other condition types as needed (coins_earned, etc.)
+
+            // 3. Upsert into user_achievements
+            const unlocked = progress >= achievement.target_value;
+            const unlockedAt = unlocked ? 'NOW()' : null;
+
+            await pool.query(`
+                INSERT INTO user_achievements (user_id, achievement_id, progress, unlocked, unlocked_at)
+                VALUES ($1, $2, $3, $4, ${unlocked ? 'NOW()' : 'NULL'})
+                ON CONFLICT (user_id, achievement_id) DO UPDATE
+                SET progress = EXCLUDED.progress,
+                    unlocked = CASE WHEN user_achievements.unlocked = TRUE THEN TRUE ELSE EXCLUDED.unlocked END,
+                    unlocked_at = CASE WHEN user_achievements.unlocked_at IS NOT NULL THEN user_achievements.unlocked_at ELSE EXCLUDED.unlocked_at END
+            `, [userId, achievement.id, progress, unlocked]);
+
+            // 4. Give rewards if just unlocked
+            // This is a simplified version. A more robust one would compare old and new 'unlocked' status.
+        }
+    } catch (error) {
+        console.error('Achievement check error:', error);
+    }
+}
 
 export const getDashboard = (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'userDashboard.html'));
@@ -160,8 +205,16 @@ export const getStats = async (req, res) => {
         const pokedexResult = await pool.query(pokedexQuery, [userId]);
         const pokedexProgress = parseInt(pokedexResult.rows[0].caught);
 
-        // Mock data
-        const achievements = Math.floor(Math.random() * 10);
+        // Get achievements count
+        const achievementsQuery = `
+            SELECT COUNT(*) as unlocked 
+            FROM user_achievements 
+            WHERE user_id = $1 AND unlocked = TRUE
+        `;
+        const achievementsResult = await pool.query(achievementsQuery, [userId]);
+        const achievements = parseInt(achievementsResult.rows[0].unlocked);
+
+        // Mock data for remaining stats
         const activeQuests = Math.floor(Math.random() * 8) + 1;
         const onlineFriends = Math.floor(Math.random() * 20) + 5;
 

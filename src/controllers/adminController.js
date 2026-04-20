@@ -12,10 +12,10 @@ export const getDashboard = (req, res) => {
 export const getStats = async (req, res) => {
     try {
         // Get total users and total caught pokemons
-        const totalPokemonQuery = 'SELECT COUNT(*) as total FROM user_pokemons';
-        const totalPokemonResult = await pool.query(totalPokemonQuery);
-        const totalCaught = parseInt(totalPokemonResult.rows[0].total);
-        const usersQuery = 'SELECT COUNT(*) as total FROM users';
+        const achievementsQuery = 'SELECT COUNT(*) as total FROM achievements';
+        const achievementsResult = await pool.query(achievementsQuery);
+        const totalAchievements = parseInt(achievementsResult.rows[0].total);
+        const usersQuery = 'SELECT COUNT(*) as total FROM users where is_admin = false';
         const usersResult = await pool.query(usersQuery);
         const totalUsers = parseInt(usersResult.rows[0].total);
 
@@ -30,7 +30,7 @@ export const getStats = async (req, res) => {
         res.json({
             totalUsers,
             activeSessions,
-            totalCaught,
+            totalAchievements,
             systemStatus
         });
     } catch (error) {
@@ -59,7 +59,7 @@ export const getAchievements = async (req, res) => {
     try {
         const query = `
             SELECT id, code, name, description, icon_url, condition_type, target_value, reward_coins, reward_pokeballs, created_at
-            FROM achievement_definitions
+            FROM achievements
             ORDER BY created_at DESC
         `;
         const { rows } = await pool.query(query);
@@ -73,14 +73,29 @@ export const getAchievements = async (req, res) => {
 
 export const addAchievement = async (req, res) => {
     try {
-        const { name, code, description, condition_type, target_value, reward_coins, reward_pokeballs, icon_url } = req.body;
+        const { name, code, description, condition_type, target_value, reward_coins, reward_pokeballs } = req.body;
+        let icon_url = null;
+
+        // If a file was uploaded via multer, use that path
+        if (req.file) {
+            icon_url = `/uploads/achievements/${req.file.filename}`;
+        }
 
         const query = `
-            INSERT INTO achievement_definitions (code, name, description, icon_url, condition_type, target_value, reward_coins, reward_pokeballs)
+            INSERT INTO achievements (code, name, description, icon_url, condition_type, target_value, reward_coins, reward_pokeballs)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING id, name, description, icon_url, condition_type, target_value, reward_coins, reward_pokeballs, created_at
         `;
-        const values = [code, name, description, icon_url, condition_type, target_value, reward_coins, reward_pokeballs];
+        const values = [
+            code, 
+            name, 
+            description, 
+            icon_url, 
+            condition_type, 
+            parseInt(target_value), 
+            parseInt(reward_coins) || 0, 
+            parseInt(reward_pokeballs) || 0
+        ];
 
         const { rows } = await pool.query(query, values);
         console.log('Added achievement:', rows[0]);
@@ -98,7 +113,7 @@ export const addAchievement = async (req, res) => {
 export const deleteAchievement = async (req, res) => {
     try {
         const { id } = req.params;
-        const query = 'DELETE FROM achievement_definitions WHERE id = $1';
+        const query = 'DELETE FROM achievements WHERE id = $1';
         await pool.query(query, [id]);
         console.log('Deleted achievement:', id);
         res.json({ message: 'Achievement deleted successfully' });
