@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Achievements - WeebMandu Admin</title>
+    <link rel="icon" href="/assets/pokeball.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/adminDashboard.css">
+    <link rel="stylesheet" href="/css/manageAchievements.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="dashboard-layout">
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon-wrapper">
+                <img src="/assets/pokeball.jpg" alt="Pokeball" class="logo-icon">
+            </div>
+            <span class="logo-text">PokeAdmin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/html/adminDashboard.html" class="nav-item">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/html/manageUsers.html" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>Users</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i data-lucide="trophy"></i>
+                <span>Achievements</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="database"></i>
+                <span>Pokémon</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="sidebar-logout" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <div class="dashboard-wrapper">
+        <header class="navbar admin-header">
+            <div class="header-title">
+                <h2>Manage Achievements</h2>
+                <p class="header-subtitle">Create and manage system achievements</p>
+            </div>
+            <div class="header-actions">
+                <!-- Actions can be added here if needed -->
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <!-- Add Achievement Form -->
+            <div class="activity-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h2>Add New Achievement</h2>
+                        <span>Create a new achievement for the system</span>
+                    </div>
+                </div>
+
+                <form id="addAchievementForm" class="achievement-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="achievementName">Achievement Name</label>
+                            <input type="text" id="achievementName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="achievementCode">Code (auto-generated)</label>
+                            <input type="text" id="achievementCode" name="code" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="achievementDescription">Description</label>
+                        <textarea id="achievementDescription" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="conditionType">Condition Type</label>
+                            <select id="conditionType" name="condition_type" required>
+                                <option value="manual">Manual</option>
+                                <option value="pokemon_caught">Pokémon Caught</option>
+                                <option value="coins_earned">Coins Earned</option>
+                                <option value="daily_logins">Daily Logins</option>
+                                <option value="achievements_unlocked">Achievements Unlocked</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="targetValue">Target Value</label>
+                            <input type="number" id="targetValue" name="target_value" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="rewardCoins">Reward Coins</label>
+                            <input type="number" id="rewardCoins" name="reward_coins" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rewardPokeballs">Reward Pokéballs</label>
+                            <input type="number" id="rewardPokeballs" name="reward_pokeballs" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="achievementIcon">Icon URL (optional)</label>
+                        <input type="url" id="achievementIcon" name="icon_url" placeholder="https://example.com/icon.png">
+                    </div>
+                    <button type="submit" class="btn-primary">Add Achievement</button>
+                </form>
+            </div>
+
+            <!-- Achievements Table -->
+            <div class="activity-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h2>All Achievements</h2>
+                        <span>View and manage all system achievements</span>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="achievements-table">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Condition</th>
+                                <th>Rewards</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="achievementsTableBody">
+                            <tr>
+                                <td colspan="7" class="empty-state">
+                                    <div class="empty-state-content">
+                                        <i data-lucide="trophy"></i>
+                                        <h4>No achievements found</h4>
+                                        <p>Achievements will appear here once created</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/manageAchievements.js"></script>
+</body>
+
+</html>

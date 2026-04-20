@@ -96,6 +96,56 @@ export const createDailyRewardsTable = async () => {
   }
 };
 
+// ACHIEVEMENT DEFINITIONS TABLE
+export const createAchievementDefinitionsTable = async () => {
+  try {
+    const query = `
+      CREATE TABLE IF NOT EXISTS achievement_definitions (
+        id SERIAL PRIMARY KEY,
+
+        code VARCHAR(50) UNIQUE NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        description TEXT NOT NULL,
+        icon_url TEXT,
+
+        condition_type VARCHAR(50) NOT NULL,
+        target_value INTEGER NOT NULL,
+
+        reward_coins INTEGER DEFAULT 0,
+        reward_pokeballs INTEGER DEFAULT 0,
+
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    await pool.query(query);
+  } catch (err) {
+    console.error("Error creating achievement_definitions table:", err);
+  }
+};
+
+// USER ACHIEVEMENTS TABLE
+export const createUserAchievementsTable = async () => {
+  try {
+    const query = `
+      CREATE TABLE IF NOT EXISTS user_achievements (
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        achievement_id INTEGER NOT NULL REFERENCES achievement_definitions(id) ON DELETE CASCADE,
+
+        progress INTEGER NOT NULL DEFAULT 0,
+        unlocked BOOLEAN NOT NULL DEFAULT FALSE,
+        unlocked_at TIMESTAMP,
+
+        PRIMARY KEY (user_id, achievement_id)
+      )
+    `;
+
+    await pool.query(query);
+  } catch (err) {
+    console.error("Error creating user_achievements table:", err);
+  }
+};
+
 //OPTIONAL INDEX (FAST QUERIES)
 export const createIndexes = async () => {
   try {
@@ -110,7 +160,18 @@ export const createIndexes = async () => {
   }
 };
 
-
+// INDEX FOR FAST LOOKUPS
+export const createAchievementIndexes = async () => {
+  try {
+    const query = `
+      CREATE INDEX IF NOT EXISTS idx_user_achievements_user
+      ON user_achievements(user_id)
+    `;
+    await pool.query(query);
+  } catch (err) {
+    console.error("Error creating achievement index:", err);
+  }
+};
 
 // RUN ALL TABLES TOGETHER
 export const initTables = async () => {
@@ -118,6 +179,9 @@ export const initTables = async () => {
   await createDailyPokemonTable();
   await createUserPokemonTable();
   await createDailyRewardsTable();
+  await createAchievementDefinitionsTable();
+  await createUserAchievementsTable();
+  await createAchievementIndexes();
   await createIndexes();
 
   console.log("All tables created successfully");

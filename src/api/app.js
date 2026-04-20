@@ -27,7 +27,7 @@ app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
 
 app.use('/', (req, res) =>{
-return res.sendFile(path.join(__dirname,'..','..', 'public','html', 'landingpage.html'));
+return res.sendFile(path.join(__dirname,'..','..', 'public','html', 'landingPage.html'));
 });
 
 try {
