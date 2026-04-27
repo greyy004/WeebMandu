@@ -384,3 +384,20 @@ export const getOwnedPokemons = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch owned pokemons' });
     }
 };
+
+export const getOnlineTrainers = async (req, res) => {
+    try {
+        const onlineResult = await pool.query(
+            `SELECT id, name, profile_image_url
+             FROM users where is_admin = false`
+        );
+        res.json({
+            count: onlineResult.rows.length,
+            trainers: onlineResult.rows
+        });
+        console.log(onlineResult.rows);
+    } catch (error) {
+        console.error('Error fetching online trainers:', error);
+        res.status(500).json({ message: 'Failed to fetch online trainers' });
+    }
+};

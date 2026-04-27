@@ -278,7 +278,7 @@ function updateUserStats(data) {
     document.getElementById('achievements').textContent = data.achievements || '0';
     document.getElementById('pokeCoins').textContent = data.pokeCoins || '0';
     document.getElementById('activeQuests').textContent = data.activeQuests || '0';
-    document.getElementById('onlineFriends').textContent = data.onlineFriends || '0';
+    document.getElementById('trainers').textContent = data.trainers || '0';
 }
 
 function setDefaultUserStats() {
@@ -287,7 +287,7 @@ function setDefaultUserStats() {
     document.getElementById('achievements').textContent = '0';
     document.getElementById('pokeCoins').textContent = '0';
     document.getElementById('activeQuests').textContent = '0';
-    document.getElementById('onlineFriends').textContent = '0';
+    document.getElementById('trainers').textContent = '0';
 }
 
 function setupUserEventListeners() {
@@ -338,12 +338,14 @@ function setupUserEventListeners() {
                     window.location.href = '/html/userPokedex.html';
                     return;
                 }
-
                 if (button.id === 'storeBtn') {
                     window.location.href = '/html/userStore.html';
                     return;
                 }
-
+                if (button.id === 'trainerDetailsBtn') {
+                    window.location.href = '/html/findOnlineTrainers.html';
+                    return;
+                }
                 showToast(`${actions[index]} feature coming soon!`, 'info');
             });
         }

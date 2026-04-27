@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Trainers - WeebMandu</title>
+    <link rel="icon" href="/assets/pokeball.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+    <link rel="stylesheet" href="/css/findOnlineTrainers.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dashboard-layout">
+    <header class="navbar">
+        <div class="navbar-brand">
+            <img src="/assets/pokeball.jpg" alt="Pokeball" class="brand-icon">
+            <span>Trainers</span>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-nav" id="backToDashboard" type="button">
+                <i data-lucide="arrow-left"></i>
+                <span>Back</span>
+            </button>
+            <button class="btn-logout" type="button" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="trainer-hero">
+            <div>
+                <h1>Trainers</h1>
+                <p>All the trainers you've encountered so far.</p>
+            </div>
+        </div>
+
+        <div id="trainerContainer" class="trainer-list">
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading Trainers...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 WeebMandu. All rights reserved.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="/js/notifications.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/findOnlineTrainers.js"></script>
+</body>
+</html>
